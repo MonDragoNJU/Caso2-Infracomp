@@ -15,11 +15,11 @@ public class GeneradorReferencias {
         this.shiftImagenResultado = shiftSobelY + calcularTamanoFiltros();
     }
 
-    private int obtenerPagina(int offset) {
+    public int obtenerPagina(int offset) {
         return offset / tamPagina;
     }    
 
-    private int calcularDesplazamiento(int offset) {
+    public int calcularDesplazamiento(int offset) {
         return offset % tamPagina;
     }
 
