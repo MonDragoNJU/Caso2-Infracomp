@@ -80,6 +80,8 @@ public class TablaPaginas {
     }
 
     public void imprimirResultados() {
+        System.out.println(System.lineSeparator() + "Resultados de la simulacion");
+        System.out.println("=============================");
         System.out.println("Numero de hits: " + hits);
         System.out.println("Numero de fallas de página: " + fallas);
 
