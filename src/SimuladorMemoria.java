@@ -45,7 +45,7 @@ public class SimuladorMemoria {
     }
 
     public static void main(String[] args) {
-        int numMarcos = 6;
+        int numMarcos = 4;
         String archivoReferencias = "referencias.txt";
 
         SimuladorMemoria simulador = new SimuladorMemoria(numMarcos, archivoReferencias);

@@ -18,14 +18,14 @@ public class TablaPaginas {
     public synchronized void procesarReferencia(int pagina, boolean esEscritura) {
         if (memoria.contains(pagina)) {
             hits++;
-            referencia.put(pagina, true);
+            referencia.put(pagina, true);  // La página ha sido usada
             if (esEscritura) {
-                modificacion.put(pagina, true);
+                modificacion.put(pagina, true);  // Si es escritura, marcar como modificada
             }
         } else {
             fallas++;
             if (memoria.size() >= numMarcos) {
-                reemplazarPagina();
+                reemplazarPagina();  // Aplicar NRU para liberar espacio
             }
             memoria.add(pagina);
             referencia.put(pagina, true);
@@ -34,15 +34,43 @@ public class TablaPaginas {
     }
 
     private void reemplazarPagina() {
-        for (int pagina : memoria) {
+        Integer paginaAEliminar = null;
+
+        for (Integer pagina : memoria) {
             if (!referencia.get(pagina) && !modificacion.get(pagina)) {
-                memoria.remove(pagina);
-                referencia.remove(pagina);
-                modificacion.remove(pagina);
-                return;
+                paginaAEliminar = pagina;
+                break;
             }
         }
-        memoria.poll();
+
+        if (paginaAEliminar == null) {
+            for (Integer pagina : memoria) {
+                if (!referencia.get(pagina) && modificacion.get(pagina)) {
+                    paginaAEliminar = pagina;
+                    break;
+                }
+            }
+        }
+
+        if (paginaAEliminar == null) {
+            for (Integer pagina : memoria) {
+                if (referencia.get(pagina) && !modificacion.get(pagina)) {
+                    paginaAEliminar = pagina;
+                    break;
+                }
+            }
+        }
+
+        if (paginaAEliminar == null) {
+            paginaAEliminar = memoria.peek();  // Última opción, eliminar la primera página de la cola
+        }
+
+        // Eliminar la página seleccionada
+        if (paginaAEliminar != null) {
+            memoria.remove(paginaAEliminar);
+            referencia.remove(paginaAEliminar);
+            modificacion.remove(paginaAEliminar);
+        }
     }
 
     public synchronized void actualizarNRU() {
@@ -52,11 +80,12 @@ public class TablaPaginas {
     }
 
     public void imprimirResultados() {
+        System.out.println("Número de hits: " + hits);
+        System.out.println("Número de fallas de página: " + fallas);
+
         long tiempoHitsMs = (long) hits * 50 / 1_000_000;
         long tiempoFallasMs = (long) fallas * 10_000_000 / 1_000_000;
 
-        System.out.println("Número de hits: " + hits);
-        System.out.println("Número de fallas de página: " + fallas);
         System.out.println("Tiempo total (hits): " + tiempoHitsMs + " ms");
         System.out.println("Tiempo total (fallas): " + tiempoFallasMs + " ms");
     }
