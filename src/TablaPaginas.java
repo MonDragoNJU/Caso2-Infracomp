@@ -18,14 +18,14 @@ public class TablaPaginas {
     public synchronized void procesarReferencia(int pagina, boolean esEscritura) {
         if (memoria.contains(pagina)) {
             hits++;
-            referencia.put(pagina, true);  // La página ha sido usada
+            referencia.put(pagina, true);
             if (esEscritura) {
-                modificacion.put(pagina, true);  // Si es escritura, marcar como modificada
+                modificacion.put(pagina, true);
             }
         } else {
             fallas++;
             if (memoria.size() >= numMarcos) {
-                reemplazarPagina();  // Aplicar NRU para liberar espacio
+                reemplazarPagina();
             }
             memoria.add(pagina);
             referencia.put(pagina, true);
@@ -62,7 +62,7 @@ public class TablaPaginas {
         }
 
         if (paginaAEliminar == null) {
-            paginaAEliminar = memoria.peek();  // Última opción, eliminar la primera página de la cola
+            paginaAEliminar = memoria.peek();
         }
 
         // Eliminar la página seleccionada
@@ -80,8 +80,8 @@ public class TablaPaginas {
     }
 
     public void imprimirResultados() {
-        System.out.println("Número de hits: " + hits);
-        System.out.println("Número de fallas de página: " + fallas);
+        System.out.println("Numero de hits: " + hits);
+        System.out.println("Numero de fallas de página: " + fallas);
 
         long tiempoHitsMs = (long) hits * 50 / 1_000_000;
         long tiempoFallasMs = (long) fallas * 10_000_000 / 1_000_000;

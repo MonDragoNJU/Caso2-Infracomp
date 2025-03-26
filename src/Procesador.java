@@ -1,6 +1,7 @@
 import java.util.List;
 
 public class Procesador extends Thread {
+    
     private TablaPaginas tablaPaginas;
     private List<String> referencias;
 

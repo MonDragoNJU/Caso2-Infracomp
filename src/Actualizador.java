@@ -1,4 +1,5 @@
 public class Actualizador extends Thread {
+    
     private TablaPaginas tablaPaginas;
 
     public Actualizador(TablaPaginas tablaPaginas) {

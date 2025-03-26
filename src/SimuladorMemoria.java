@@ -44,11 +44,4 @@ public class SimuladorMemoria {
         tablaPaginas.imprimirResultados();
     }
 
-    public static void main(String[] args) {
-        int numMarcos = 4;
-        String archivoReferencias = "referencias.txt";
-
-        SimuladorMemoria simulador = new SimuladorMemoria(numMarcos, archivoReferencias);
-        simulador.ejecutar();
-    }
 }
