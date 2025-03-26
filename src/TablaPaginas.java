@@ -33,6 +33,7 @@ public class TablaPaginas {
         }
     }
 
+    //Metodo NRU
     private void reemplazarPagina() {
         Integer paginaAEliminar = null;
 
@@ -65,7 +66,6 @@ public class TablaPaginas {
             paginaAEliminar = memoria.peek();
         }
 
-        // Eliminar la página seleccionada
         if (paginaAEliminar != null) {
             memoria.remove(paginaAEliminar);
             referencia.remove(paginaAEliminar);
