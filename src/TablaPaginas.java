@@ -37,26 +37,15 @@ public class TablaPaginas {
     public synchronized void reemplazarPagina() {
         Integer paginaAEliminar = null;
         int mejorClase = 4;
-        int indice = 0;
-        int tamanoMemoria = memoria.size();
     
-        while (indice < tamanoMemoria) {
-            Integer pagina = (Integer) memoria.toArray()[indice];
-            int clase = 0;
-    
-            if (referencia.get(pagina)) {
-                clase += 2;
-            }
-            if (modificacion.get(pagina)) {
-                clase += 1;
-            }
+        for (Integer pagina : memoria) {
+            int clase = (referencia.get(pagina) ? 2 : 0) + (modificacion.get(pagina) ? 1 : 0);
     
             if (clase < mejorClase) {
                 mejorClase = clase;
                 paginaAEliminar = pagina;
+                if (mejorClase == 0) break;
             }
-    
-            indice++;
         }
     
         if (paginaAEliminar != null) {
@@ -64,7 +53,7 @@ public class TablaPaginas {
             referencia.remove(paginaAEliminar);
             modificacion.remove(paginaAEliminar);
         }
-    }    
+    }     
 
     public synchronized void actualizarNRU() {
         for (Integer pagina : referencia.keySet()) {
