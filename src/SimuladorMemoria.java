@@ -11,7 +11,7 @@ public class SimuladorMemoria {
         cargarReferencias(archivoReferencias);
     }
 
-    private void cargarReferencias(String archivo) {
+    public void cargarReferencias(String archivo) {
         try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
             String linea;
             while ((linea = reader.readLine()) != null) {

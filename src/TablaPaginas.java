@@ -34,44 +34,37 @@ public class TablaPaginas {
     }
 
     //Metodo NRU
-    private void reemplazarPagina() {
+    public synchronized void reemplazarPagina() {
         Integer paginaAEliminar = null;
-
-        for (Integer pagina : memoria) {
-            if (!referencia.get(pagina) && !modificacion.get(pagina)) {
+        int mejorClase = 4;
+        int indice = 0;
+        int tamanoMemoria = memoria.size();
+    
+        while (indice < tamanoMemoria) {
+            Integer pagina = (Integer) memoria.toArray()[indice];
+            int clase = 0;
+    
+            if (referencia.get(pagina)) {
+                clase += 2;
+            }
+            if (modificacion.get(pagina)) {
+                clase += 1;
+            }
+    
+            if (clase < mejorClase) {
+                mejorClase = clase;
                 paginaAEliminar = pagina;
-                break;
             }
+    
+            indice++;
         }
-
-        if (paginaAEliminar == null) {
-            for (Integer pagina : memoria) {
-                if (!referencia.get(pagina) && modificacion.get(pagina)) {
-                    paginaAEliminar = pagina;
-                    break;
-                }
-            }
-        }
-
-        if (paginaAEliminar == null) {
-            for (Integer pagina : memoria) {
-                if (referencia.get(pagina) && !modificacion.get(pagina)) {
-                    paginaAEliminar = pagina;
-                    break;
-                }
-            }
-        }
-
-        if (paginaAEliminar == null) {
-            paginaAEliminar = memoria.peek();
-        }
-
+    
         if (paginaAEliminar != null) {
             memoria.remove(paginaAEliminar);
             referencia.remove(paginaAEliminar);
             modificacion.remove(paginaAEliminar);
         }
-    }
+    }    
 
     public synchronized void actualizarNRU() {
         for (Integer pagina : referencia.keySet()) {
