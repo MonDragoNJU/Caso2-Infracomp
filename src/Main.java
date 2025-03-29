@@ -18,11 +18,17 @@ public class Main {
                 System.out.print("Ingrese el nombre del archivo BMP: ");
                 String nombreImagen = scanner.nextLine();
                 Imagen imagen = new Imagen(nombreImagen);
+                Imagen imagenOut=  new Imagen(nombreImagen);
 
                 System.out.print("Ingrese el tamaño de página (en bytes): ");
                 int tamPagina = scanner.nextInt();
 
+                FiltroSobel fs= new FiltroSobel(imagen, imagenOut);
+                fs.applySobel();
+
                 GeneradorReferencias generador = new GeneradorReferencias(imagen, tamPagina);
+
+                imagenOut.escribirImagen(String.format("resultado%s.bmp", nombreImagen));
 
                 generador.generarReferencias();
                 break;
