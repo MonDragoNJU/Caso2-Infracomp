@@ -4,78 +4,61 @@ public class TablaPaginas {
     private int numMarcos;
     private Map<Integer, Boolean> referencia;
     private Map<Integer, Boolean> modificacion;
-    private Queue<Integer> memoria;
+    private ArrayList<Integer> memoria;
     private int hits = 0;
     private int fallas = 0;
+    private Object lock = new Object();
 
     public TablaPaginas(int numMarcos) {
         this.numMarcos = numMarcos;
         this.referencia = new HashMap<>();
         this.modificacion = new HashMap<>();
-        this.memoria = new LinkedList<>();
+        this.memoria = new ArrayList<>();
     }
 
-    public synchronized void procesarReferencia(int pagina, boolean esEscritura) {
-        if (memoria.contains(pagina)) {
-            hits++;
-            referencia.put(pagina, true);
-            if (esEscritura) {
-                modificacion.put(pagina, true);
+    public void procesarReferencia(int pagina, boolean esEscritura) {
+        synchronized (lock) {
+            if (memoria.contains(pagina)) {
+                hits++;
+            } else {
+                fallas++;
+                if (memoria.size() >= numMarcos) {
+                    reemplazarPagina();
+                }
+                memoria.add(pagina);
             }
-        } else {
-            fallas++;
-            if (memoria.size() >= numMarcos) {
-                reemplazarPagina();
-            }
-            memoria.add(pagina);
             referencia.put(pagina, true);
             modificacion.put(pagina, esEscritura);
         }
     }
 
     //Metodo NRU
-    private void reemplazarPagina() {
+    public synchronized void reemplazarPagina() {
         Integer paginaAEliminar = null;
-
+        int mejorClase = 4;
+    
         for (Integer pagina : memoria) {
-            if (!referencia.get(pagina) && !modificacion.get(pagina)) {
+            int clase = (referencia.get(pagina) ? 2 : 0) + (modificacion.get(pagina) ? 1 : 0);
+    
+            if (clase < mejorClase) {
+                mejorClase = clase;
                 paginaAEliminar = pagina;
-                break;
+                if (mejorClase == 0) break;
             }
         }
-
-        if (paginaAEliminar == null) {
-            for (Integer pagina : memoria) {
-                if (!referencia.get(pagina) && modificacion.get(pagina)) {
-                    paginaAEliminar = pagina;
-                    break;
-                }
-            }
-        }
-
-        if (paginaAEliminar == null) {
-            for (Integer pagina : memoria) {
-                if (referencia.get(pagina) && !modificacion.get(pagina)) {
-                    paginaAEliminar = pagina;
-                    break;
-                }
-            }
-        }
-
-        if (paginaAEliminar == null) {
-            paginaAEliminar = memoria.peek();
-        }
-
+    
         if (paginaAEliminar != null) {
             memoria.remove(paginaAEliminar);
             referencia.remove(paginaAEliminar);
             modificacion.remove(paginaAEliminar);
         }
-    }
+    }     
 
-    public synchronized void actualizarNRU() {
-        for (Integer pagina : referencia.keySet()) {
-            referencia.put(pagina, false);
+    public void actualizarNRU() {
+        synchronized (lock) {
+            for (Integer pagina : referencia.keySet()) {
+                referencia.put(pagina, false);
+            }
         }
     }
 
