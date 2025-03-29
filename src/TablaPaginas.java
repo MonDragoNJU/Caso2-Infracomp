@@ -7,7 +7,6 @@ public class TablaPaginas {
     private ArrayList<Integer> memoria;
     private int hits = 0;
     private int fallas = 0;
-    private Object lock = new Object();
 
     public TablaPaginas(int numMarcos) {
         this.numMarcos = numMarcos;
@@ -16,8 +15,7 @@ public class TablaPaginas {
         this.memoria = new ArrayList<>();
     }
 
-    public void procesarReferencia(int pagina, boolean esEscritura) {
-        synchronized (lock) {
+    public synchronized void procesarReferencia(int pagina, boolean esEscritura) {
             if (memoria.contains(pagina)) {
                 hits++;
             } else {
@@ -29,7 +27,6 @@ public class TablaPaginas {
             }
             referencia.put(pagina, true);
             modificacion.put(pagina, esEscritura);
-        }
     }
 
     //Metodo NRU
@@ -43,7 +40,7 @@ public class TablaPaginas {
             if (clase < mejorClase) {
                 mejorClase = clase;
                 paginaAEliminar = pagina;
-                if (mejorClase == 0) break;
+                if (mejorClase == 0) {break;}
             }
         }
     
@@ -54,12 +51,10 @@ public class TablaPaginas {
         }
     }     
 
-    public void actualizarNRU() {
-        synchronized (lock) {
+    public synchronized void actualizarNRU() {
             for (Integer pagina : referencia.keySet()) {
                 referencia.put(pagina, false);
             }
-        }
     }
 
     public void imprimirResultados() {
