@@ -4,7 +4,7 @@ public class TablaPaginas {
     private int numMarcos;
     private Map<Integer, Boolean> referencia;
     private Map<Integer, Boolean> modificacion;
-    private ArrayList<Integer> memoria;
+    private Queue<Integer> memoria;
     private int hits = 0;
     private int fallas = 0;
 
@@ -12,7 +12,7 @@ public class TablaPaginas {
         this.numMarcos = numMarcos;
         this.referencia = new HashMap<>();
         this.modificacion = new HashMap<>();
-        this.memoria = new ArrayList<>();
+        this.memoria = new LinkedList<>();
     }
 
     public synchronized void procesarReferencia(int pagina, boolean esEscritura) {
@@ -22,7 +22,7 @@ public class TablaPaginas {
             fallas++;
             if (memoria.size() >= numMarcos) {
                 reemplazarPagina();
-            }
+            } 
             memoria.add(pagina);
         }
         referencia.put(pagina, true);
@@ -43,18 +43,14 @@ public class TablaPaginas {
                 if (mejorClase == 0) break;
             }
         }
-    
-        if (paginaAEliminar != null) {
-            memoria.remove(paginaAEliminar);
-            referencia.remove(paginaAEliminar);
-            modificacion.remove(paginaAEliminar);
-        }
+
+        memoria.remove(paginaAEliminar);
+        referencia.remove(paginaAEliminar);
+        modificacion.remove(paginaAEliminar);
     }     
 
     public synchronized void actualizarNRU() {
-        for (Integer pagina : referencia.keySet()) {
-            referencia.put(pagina, false);
-        }
+        referencia.replaceAll((pagina, valor) -> false);
     }
 
     public void imprimirResultados() {

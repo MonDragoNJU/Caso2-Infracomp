@@ -19,7 +19,7 @@ public class Procesador extends Thread {
             
             tablaPaginas.procesarReferencia(pagina, esEscritura);
 
-            if (i % 10000 == 0) {
+            if (i % 9999 == 0) {
                 try {
                     Thread.sleep(1);
                 } catch (InterruptedException e) {
