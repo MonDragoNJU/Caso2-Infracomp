@@ -20,7 +20,7 @@ public class Main {
                 case 1:
                     System.out.print("Ingrese el nombre del archivo BMP: ");
                     String nombreImagen = scanner.nextLine();
-                    Imagen imagen = new Imagen(nombreImagen);
+                    Imagen imagen = new Imagen("src/imagenes/"+nombreImagen);
 
                     System.out.print("Ingrese el tamaño de página (en bytes): ");
                     int tamPagina = scanner.nextInt();
